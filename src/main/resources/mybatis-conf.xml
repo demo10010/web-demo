@@ -18,5 +18,7 @@
     <!--</environments>-->
     <mappers>
         <!--<mapper resource="mappers/sqlDemoMapper.xml"></mapper>-->
+        <mapper resource="mappers/sqlDemoMapper.xml"></mapper>
+        <mapper resource="mappers/sqlDemoMapper2.xml"></mapper>
     </mappers>
 </configuration>

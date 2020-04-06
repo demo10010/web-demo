@@ -4,7 +4,6 @@ import com.haizhi.webdemo.entity.User;
 import com.haizhi.webdemo.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,7 +16,13 @@ public class UserController {
     @ApiOperation("测试mybatis")
     public void testMybatis(@RequestBody User user) {
         userService.testMybatis(user);
-        return;
+    }
+
+
+    @GetMapping("/testSql")
+    @ApiOperation("测试sql")
+    public void testSql() {
+        userService.testSql();
     }
 
 }
