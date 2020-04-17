@@ -40,12 +40,12 @@
             <artifactId>guava</artifactId>
             <version>27.1-jre</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.github.xiaoymin</groupId>-->
-            <!--<artifactId>knife4j-spring-boot-starter</artifactId>-->
-            <!--&lt;!&ndash;在引用时请在maven中央仓库搜索最新版本号&ndash;&gt;-->
-            <!--<version>2.0.2</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <!--在引用时请在maven中央仓库搜索最新版本号-->
+            <version>2.0.2</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

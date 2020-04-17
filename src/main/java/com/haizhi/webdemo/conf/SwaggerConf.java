@@ -1,5 +1,6 @@
 package com.haizhi.webdemo.conf;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.google.common.base.Predicates;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
 @Slf4j
+@EnableKnife4j
 public class SwaggerConf {
     @Bean
     public Docket controllerApi() {
