@@ -18,7 +18,7 @@ public class MyKafkaConsumer {
         Optional<String> msg = Optional.ofNullable(record.value());
         if (msg.isPresent()) {
             String message = msg.get();
-            log.info("MyKafkaConsumer raw key: ", record.key());//
+            log.info("MyKafkaConsumer raw key: {}", record.key());//
             log.info(" message body : {}", message);
             KafkaMessageDo kafkaMessageDo = CommonConstants.KAFKA_GSON.fromJson(message, KafkaMessageDo.class);
             log.info(" kafkaMessageDo.msg : {}", kafkaMessageDo.getMsg());
@@ -30,7 +30,7 @@ public class MyKafkaConsumer {
         Optional<String> msg = Optional.ofNullable(record.value());
         if (msg.isPresent()) {
             String message = msg.get();
-            log.info("with key MyKafkaConsumer raw key: ", record.key());
+            log.info("with key MyKafkaConsumer raw key: {} ", record.key());
             log.info("with key message body : {}", message);
         }
     }
