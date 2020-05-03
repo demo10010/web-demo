@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class UserDo {
     @ApiModelProperty(example = "1")
     private int id;
 

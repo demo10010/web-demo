@@ -1,27 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.haizhi.webdemo.dao.UserDao">
-    <insert id="insertUser" parameterType="com.haizhi.webdemo.entity.User" useGeneratedKeys="true" keyColumn="id">
-       insert into t_user(name, age) values(#{name}, #{age})
-    </insert>
+<mapper namespace="com.haizhi.webdemo.dao.DemoDao">
 
-    <update id="updateUser" parameterType="com.haizhi.webdemo.entity.User">
-       update t_user set name=#{name}, age=#{age} where id=#{id}
-    </update>
-
-    <select id="findById" parameterType="int" resultType="com.haizhi.webdemo.entity.User">
-       select * from t_user where id=#{id}
+    <select id="query" resultType="com.haizhi.webdemo.entity.UserDo">
+       select * from t_user
     </select>
 
-    <select id="findByMap" parameterType="java.util.Map" resultType="com.haizhi.webdemo.entity.User">
-       select * from t_user where id=#{id}
+    <select id="testMybatis" parameterType="com.haizhi.webdemo.entity.UserDo" resultType="com.haizhi.webdemo.entity.UserDo">
+      select * from t_user where id=#{id}
     </select>
 
-    <select id="findByBean" parameterType="com.haizhi.webdemo.entity.User" resultType="com.haizhi.webdemo.entity.User">
-       select * from t_user where name=#{name}
-    </select>
+    <!--<insert id="insertUser" parameterType="com.haizhi.webdemo.entity.User" useGeneratedKeys="true" keyColumn="id">-->
+       <!--insert into t_user(name, age) values(#{name}, #{age})-->
+    <!--</insert>-->
 
-    <delete id="deleteUser" parameterType="int">
-       delete from t_user where id=#{id}
-    </delete>
+    <!--<update id="updateUser" parameterType="com.haizhi.webdemo.entity.User">-->
+       <!--update t_user set name=#{name}, age=#{age} where id=#{id}-->
+    <!--</update>-->
+
+    <!--<select id="findById" parameterType="int" resultType="com.haizhi.webdemo.entity.User">-->
+       <!--select * from t_user where id=#{id}-->
+    <!--</select>-->
+
+    <!--<select id="findByMap" parameterType="java.util.Map" resultType="com.haizhi.webdemo.entity.User">-->
+       <!--select * from t_user where id=#{id}-->
+    <!--</select>-->
+
+    <!--<select id="findByBean" parameterType="com.haizhi.webdemo.entity.User" resultType="com.haizhi.webdemo.entity.User">-->
+       <!--select * from t_user where name=#{name}-->
+    <!--</select>-->
+
+    <!--<delete id="deleteUser" parameterType="int">-->
+       <!--delete from t_user where id=#{id}-->
+    <!--</delete>-->
 </mapper>
