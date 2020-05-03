@@ -17,6 +17,9 @@ public class UserDo {
     @ApiModelProperty(example = "name1")
     private String name;
 
+    @ApiModelProperty(example = "password")
+    private String password;
+
     @ApiModelProperty(value = "20")
     private int age;
 }
