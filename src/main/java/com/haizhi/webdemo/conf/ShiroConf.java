@@ -1,71 +1,88 @@
 package com.haizhi.webdemo.conf;
 
-import com.haizhi.webdemo.shiro.CustomRealm;
+import com.haizhi.webdemo.shiro.ChainDefinitionProvider;
+import com.haizhi.webdemo.shiro.MyShiroRealm;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.WebSecurityManager;
-import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 
 
 @Configuration
+@Slf4j
 public class ShiroConf {
-    //不加这个注解不生效，具体不详
     @Bean
-    @ConditionalOnMissingBean
-    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-        DefaultAdvisorAutoProxyCreator defaultAAP = new DefaultAdvisorAutoProxyCreator();
-        defaultAAP.setProxyTargetClass(true);
-        return defaultAAP;
+    public ShiroFilterFactoryBean shirFilter(WebSecurityManager securityManager) {
+        log.info("ShiroConfiguration.shirFilter()");
+        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        shiroFilterFactoryBean.setSecurityManager(securityManager);
+        shiroFilterFactoryBean.setLoginUrl("/login");
+        // 登录成功后要跳转的链接
+        shiroFilterFactoryBean.setSuccessUrl("/index");
+
+        //未授权界面;
+        shiroFilterFactoryBean.setUnauthorizedUrl("/403");
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(ChainDefinitionProvider.getAllRolesPermissions());
+        return shiroFilterFactoryBean;
     }
 
-    //将自己的验证方式加入容器
+    /**
+     * 凭证匹配器（由于我们的密码校验交给Shiro的SimpleAuthenticationInfo进行处理了 ）
+     */
     @Bean
-    public CustomRealm myShiroRealm() {
-        CustomRealm customRealm = new CustomRealm(null);
-//        customRealm.setCredentialsMatcher();
-        return customRealm;
+    public HashedCredentialsMatcher hashedCredentialsMatcher() {
+        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
+        hashedCredentialsMatcher.setHashAlgorithmName("md5");//散列算法:这里使用MD5算法;
+        hashedCredentialsMatcher.setHashIterations(2);//散列的次数，比如散列两次，相当于 md5(md5(""));
+        return hashedCredentialsMatcher;
     }
 
-    //权限管理，配置主要是Realm的管理认证
     @Bean
-    public DefaultWebSecurityManager securityManager() {
+    public MyShiroRealm myShiroRealm() {
+        MyShiroRealm myShiroRealm = new MyShiroRealm();
+        myShiroRealm.setCredentialsMatcher(hashedCredentialsMatcher());
+        return myShiroRealm;
+    }
+
+    @Bean
+    public WebSecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(myShiroRealm());
         return securityManager;
     }
 
-    //Filter工厂，设置对应的过滤条件和跳转条件
-    @Bean
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(WebSecurityManager securityManager) {
-        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        shiroFilterFactoryBean.setSecurityManager(securityManager);
-        Map<String, String> map = new HashMap<>();
-        //登出
-        map.put("/logout", "logout");
-        //对所有用户认证
-        map.put("/**", "authc");
-        //登录
-        shiroFilterFactoryBean.setLoginUrl("/login");
-        //首页
-        shiroFilterFactoryBean.setSuccessUrl("/index");
-        //错误页面，认证不通过跳转
-        shiroFilterFactoryBean.setUnauthorizedUrl("/error");
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
-        return shiroFilterFactoryBean;
-    }
-
-    //加入注解的使用，不加入这个注解不生效
+    /**
+     * 开启shiro aop注解支持.
+     * 使用代理方式;所以需要开启代码支持;
+     *
+     * @param securityManager
+     */
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(WebSecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
         return authorizationAttributeSourceAdvisor;
+    }
+
+    @Bean(name = "simpleMappingExceptionResolver")
+    public SimpleMappingExceptionResolver simpleMappingExceptionResolver() {
+        SimpleMappingExceptionResolver r = new SimpleMappingExceptionResolver();
+        Properties mappings = new Properties();
+        mappings.setProperty("DatabaseException", "databaseError");//数据库异常处理
+        mappings.setProperty("UnauthorizedException", "403");
+        r.setExceptionMappings(mappings);  // None by default
+        r.setDefaultErrorView("error");    // No default
+        r.setExceptionAttribute("ex");     // Default is "exception"
+        //r.setWarnLogCategory("example.MvcLogger");     // No default
+        return r;
     }
 }
