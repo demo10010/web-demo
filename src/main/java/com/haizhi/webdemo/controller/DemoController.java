@@ -29,6 +29,7 @@ public class DemoController {
     @GetMapping("/delCookies")
     @ApiOperation("测试delCookies")
     public void delCookies(HttpServletRequest request, HttpServletResponse response) {
+
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
