@@ -1,17 +1,24 @@
 package com.haizhi.webdemo.controller;
 
+import com.haizhi.webdemo.component.NeedMock;
 import com.haizhi.webdemo.entity.CommonResponse;
 import com.haizhi.webdemo.entity.UserDo;
 import com.haizhi.webdemo.service.DemoService;
+import com.haizhi.webdemo.service.TestComponent;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.models.Response;
+import org.mockito.*;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 
 @RestController
@@ -61,4 +68,34 @@ public class DemoController {
         return CommonResponse.success(demoService.testSql());
     }
 
+
+    @PostConstruct
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+        Mockito.when(needMock.remoteReq(Mockito.any())).thenReturn("mock inject");
+    }
+
+    @Resource
+    @InjectMocks
+    private TestComponent testComponent;
+    @Mock
+    private NeedMock needMock;
+
+
+    @GetMapping("/test")
+    public String test(@PathParam("name") String name) {
+        return testComponent.test(Test.AAA) + "";
+    }
+
+    @GetMapping("/test2")
+    public String test2() {
+        Test name = Test.AAA;
+        return testComponent.test(name);
+    }
+
+
+    public enum Test {
+        AAA,
+        BBB;
+    }
 }
